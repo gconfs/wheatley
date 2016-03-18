@@ -1,0 +1,26 @@
+FROM alpine
+MAINTAINER Alexis Horgix Chotard <alexis.horgix.chotard@gmail.com>
+
+ENV SOPELVER 6.3.1
+ENV PYREDMINEVER 1.5.0
+
+RUN apk add --update ca-certificates python3
+RUN wget https://github.com/sopel-irc/sopel/archive/${SOPELVER}.tar.gz -O sopel.tar.gz \
+  && wget https://bootstrap.pypa.io/get-pip.py \
+  && tar xzf sopel.tar.gz \
+  && python3 get-pip.py && pip3 install -r sopel-${SOPELVER}/requirements.txt \
+  && pip3 install ipython \
+  && rm sopel.tar.gz get-pip.py \
+  && rm -rf /tmp/* /var/cache/apk/* \
+  && adduser -D sopel
+
+RUN wget https://github.com/maxtepkeev/python-redmine/archive/v${PYREDMINEVER}.tar.gz -O python-redmine.tar.gz \
+  && tar xzf python-redmine.tar.gz \
+  && cd python-redmine-${PYREDMINEVER} && python3 setup.py install
+
+COPY weathley-docker.cfg /home/sopel/weathley.cfg
+COPY key.txt key.txt
+COPY gredmine.py /home/sopel/gredmine.py
+RUN chown sopel:sopel /home/sopel/*
+
+CMD su sopel -c 'python3 /sopel-6.3.1/sopel.py -c /home/sopel/weathley.cfg'
