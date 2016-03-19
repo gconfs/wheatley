@@ -18,9 +18,9 @@ RUN apk add --update ca-certificates python3 \
   && adduser -D sopel \
   && cd python-redmine-${PYREDMINEVER} && python3 setup.py install
 
-COPY weathley-docker.cfg /home/sopel/weathley.cfg
+COPY wheatley-docker.cfg /home/sopel/wheatley.cfg
 COPY key.txt key.txt
 COPY gredmine.py /home/sopel/gredmine.py
 RUN chown sopel:sopel /home/sopel/*
 
-CMD su sopel -c 'python3 /sopel-6.3.1/sopel.py -c /home/sopel/weathley.cfg'
+CMD su sopel -c 'python3 /sopel-6.3.1/sopel.py -c /home/sopel/wheatley.cfg'
